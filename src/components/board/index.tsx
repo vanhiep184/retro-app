@@ -13,7 +13,7 @@ import CreateBoard from "./create";
 import dayjs from "dayjs";
 import ShareIcon from "@material-ui/icons/Share";
 import EditIcon from "@material-ui/icons/Edit";
-import TimerIcon from "@material-ui/icons/Timer";
+import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
@@ -79,7 +79,7 @@ export default function Board({ board }: IBoard) {
           component="p"
           className={classes.timer}
         >
-          <TimerIcon style={{ fontSize: 12 }} />
+          <QueryBuilderIcon style={{ fontSize: 12, marginRight: 4 }} />
           {dayjs(board.createdAt).format("DD-MM-YYYY")}
         </Typography>
       </CardContent>

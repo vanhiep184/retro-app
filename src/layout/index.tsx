@@ -3,10 +3,13 @@ import App from "../pages";
 import Navigation from "../components/appBar";
 import BoardDetail from "../pages/board/_id";
 import PageNotFound from "../pages/not-found";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Login from "../pages/login";
+import { Route, Switch } from "react-router-dom";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
+// import PrivateRoute from "../routes/private";
+import PublishRoute from "../routes/publish";
 
 const theme = createMuiTheme({
   palette: {
@@ -41,20 +44,20 @@ const Layout = () => {
     <ThemeProvider theme={theme}>
       <Navigation></Navigation>
       <main className={classes.main}>
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={App}></Route>
-            <Route exact path="/dashboard" component={App} />
-            <Route
-              exact
-              path="/board/:boardId"
-              render={(props) => {
-                return <BoardDetail id={123}></BoardDetail>;
-              }}
-            />
-            <Route component={PageNotFound}></Route>
-          </Switch>
-        </BrowserRouter>
+        <Switch>
+          {/* <PrivateRoute exact path="/">
+            {App}
+          </PrivateRoute> */}
+          <PublishRoute exact path="/" component={App}></PublishRoute>
+          <PublishRoute exact path="/login">
+            <Login />
+          </PublishRoute>
+          <PublishRoute exact path="/dashboard" component={App} />
+          <PublishRoute exact path="/board/:boardId">
+            <BoardDetail id={123}></BoardDetail>
+          </PublishRoute>
+          <Route component={PageNotFound}></Route>
+        </Switch>
       </main>
     </ThemeProvider>
   );

@@ -11,7 +11,7 @@ const config = {
     appId: "1:846312670366:web:112b3b187789e3c16a678f",
     measurementId: "G-GT0ML5NQ1C",
 };
-firebase.initializeApp(config);
+const app = firebase.initializeApp(config);
 
 const db = firebase.firestore();
 
@@ -19,4 +19,4 @@ const boardsRef = db.collection("Boards");
 const columnsRef = db.collection("Columns");
 const cardsRef = db.collection("Cards");
 
-export { boardsRef, columnsRef, cardsRef };
+export { app, boardsRef, columnsRef, cardsRef };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Board, { CreateBoard } from "../components/board";
 import { makeStyles } from "@material-ui/core/styles";
-import { boardsRef } from "../firebase";
+import { boardsRef } from "../misc/firebase";
 import {
   Typography,
   Grid,

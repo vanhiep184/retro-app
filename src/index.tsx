@@ -2,10 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Layout from "./layout";
 import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter } from "react-router-dom";
 import "./components/home/home.css";
 ReactDOM.render(
   <React.StrictMode>
-    <Layout></Layout>
+    <BrowserRouter>
+      <Layout></Layout>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );
