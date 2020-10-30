@@ -1,18 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./pages";
-import PageNotFound from "./pages/not-found";
+import Layout from "./layout";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import "./components/home/home.css";
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={App}></Route>
-        <Route path="/dashboard" component={App} />
-        <Route component={PageNotFound}></Route>
-      </Switch>
-    </BrowserRouter>
+    <Layout></Layout>
   </React.StrictMode>,
   document.getElementById("root")
 );

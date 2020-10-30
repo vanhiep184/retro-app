@@ -15,8 +15,8 @@ firebase.initializeApp(config);
 
 const db = firebase.firestore();
 
-const boardsRef = db.collection("boards");
-const columnsRef = db.collection("columns");
-const cardsRef = db.collection("cards");
+const boardsRef = db.collection("Boards");
+const columnsRef = db.collection("Columns");
+const cardsRef = db.collection("Cards");
 
 export { boardsRef, columnsRef, cardsRef };
