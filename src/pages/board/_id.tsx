@@ -1,19 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import {
-  Grid,
-  Button,
-  IconButton,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import StopRoundedIcon from "@material-ui/icons/StopRounded";
+import { Grid, Button, IconButton, Typography } from "@material-ui/core";
 import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
-import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
-import EditTwoToneIcon from "@material-ui/icons/EditTwoTone";
+import Column from "../../components/column";
+import { columnsRef } from "../../misc/firebase";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -39,14 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       backgroundColor: theme.palette.grey[100],
     },
-    columnTitle: {
-      display: "flex",
-      alignItems: "center",
-    },
-    button: {
-      margin: theme.spacing(1, 0, 1),
-      backgroundColor: theme.palette.grey[400],
-    },
     shareButton: {
       color: theme.palette.common.white,
       backgroundColor: theme.palette.secondary.main,
@@ -54,40 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
       "&:hover": {
         backgroundColor: theme.palette.primary.light,
       },
-    },
-    addButton: {
-      color: theme.palette.common.white,
-      backgroundColor: theme.palette.success.main,
-      marginRight: theme.spacing(1),
-      height: theme.spacing(3),
-      "&:hover": {
-        backgroundColor: theme.palette.primary.light,
-      },
-    },
-    cardItem: {
-      minHeight: theme.spacing(8),
-      backgroundColor: theme.palette.common.white,
-    },
-    cardContent: {
-      padding: theme.spacing(1, 1, 0),
-    },
-    cardContentView: {
-      padding: theme.spacing(1),
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "start",
-      fontFamily: "Times New Roman, Times, serif",
-    },
-    cardActions: {
-      display: "flex",
-      justifyContent: "space-between",
-    },
-    input: {
-      "&:focus": {
-        border: "none",
-      },
-      border: "none",
-      width: "100%",
     },
   })
 );
@@ -98,6 +46,24 @@ interface IBoard {
 
 const BoardDetail = ({ id, props }: IBoard) => {
   const classes = useStyles();
+  const [columns, setColumns] = useState<any[]>([]);
+  useEffect(() => {
+    const columnsDefault: any[] = [
+      {
+        id: 1,
+        name: "Went Well",
+      },
+      {
+        id: 2,
+        name: "To Improve",
+      },
+      {
+        id: 3,
+        name: "Actions Item",
+      },
+    ];
+    setColumns([...columnsDefault]);
+  }, []);
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
@@ -114,94 +80,18 @@ const BoardDetail = ({ id, props }: IBoard) => {
         </Grid>
       </Grid>
       <Grid container spacing={0} className={classes.root}>
-        <Grid item xs={6} sm={4} className={classes.column}>
-          <div className={classes.columnTitle}>
-            <StopRoundedIcon color="primary" />
-            Went Well
-          </div>
-          <Button
-            variant="contained"
-            color="default"
-            fullWidth
-            disableElevation
-            className={classes.button}
-            startIcon={<AddIcon style={{ fontSize: 15 }} />}
-          ></Button>
-          <Card
-            color="primary"
-            className={classes.cardItem}
-            style={{
-              border: "2px solid red",
-            }}
-          >
-            <CardContent className={classes.cardContent}>
-              <input type="text" className={classes.input} />
-            </CardContent>
-            <CardActions className={classes.cardActions}>
-              <Button size="small" className={classes.addButton}>
-                add
-              </Button>
-              <IconButton size="small" color="primary" aria-label="setting">
-                <DeleteForeverRoundedIcon
-                  fontSize="small"
-                  color="error"
-                ></DeleteForeverRoundedIcon>
-              </IconButton>
-            </CardActions>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={4} className={classes.column}>
-          <div className={classes.columnTitle}>
-            <StopRoundedIcon color="secondary" />
-            To Improve
-          </div>
-          <Button
-            variant="contained"
-            color="default"
-            fullWidth
-            disableElevation
-            className={classes.button}
-            startIcon={<AddIcon style={{ fontSize: 15 }} />}
-          ></Button>
-          <Card
-            color="primary"
-            className={classes.cardItem}
-            style={{
-              backgroundColor: "red",
-              color: "white",
-            }}
-          >
-            <div className={classes.cardContentView}>
-              <Typography>
-                Content is showed in there. Content is showed in there . Content
-                is showed in there . Content is showed in thereContent is showed
-                in there. Content is showed in there . Content is showed in
-                there . Content is showed in thereContent is showed in there.
-                Content is showed in there . Content is showed in there .
-                Content is showed in there
-              </Typography>
-              <IconButton size="small" color="primary" aria-label="setting">
-                <EditTwoToneIcon
-                  style={{ fontSize: 16, color: "white" }}
-                ></EditTwoToneIcon>
-              </IconButton>
-            </div>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={4} className={classes.column}>
-          <div className={classes.columnTitle}>
-            <StopRoundedIcon color="action" />
-            Actions Item
-          </div>
-          <Button
-            variant="contained"
-            color="default"
-            fullWidth
-            disableElevation
-            className={classes.button}
-            startIcon={<AddIcon style={{ fontSize: 15 }} />}
-          ></Button>
-        </Grid>
+        {columns &&
+          columns.map((column) => (
+            <Grid
+              key={"column-" + column.id}
+              item
+              xs={12}
+              sm={4}
+              className={classes.column}
+            >
+              <Column column={column}></Column>
+            </Grid>
+          ))}
       </Grid>
     </div>
   );
