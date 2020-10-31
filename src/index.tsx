@@ -5,11 +5,9 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import "./components/home/home.css";
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Layout></Layout>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <Layout></Layout>
+  </BrowserRouter>,
   document.getElementById("root")
 );
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import {
   Button,
   CssBaseline,
@@ -18,7 +18,7 @@ import { ReactComponent as Facebook } from "../static/facebook.svg";
 import { ReactComponent as Google } from "../static/google.svg";
 import { auth, usersRef } from "../misc/firebase";
 import firebase from "firebase/app";
-
+import { useHistory } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   paper: {
     paddingTop: theme.spacing(8),
@@ -57,27 +57,27 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
-
+  const history = useHistory();
   const signIn = async (provider: any) => {
     try {
       const { additionalUserInfo, user } = await auth.signInWithPopup(provider);
+      console.log(additionalUserInfo?.username, user);
       if (additionalUserInfo?.isNewUser) {
         // Do create new user then save to db
         const userData: any = {
-          username: additionalUserInfo?.username,
-          profile: additionalUserInfo?.profile,
+          uid: user?.uid,
           email: user?.email,
           name: user?.displayName,
           phone: user?.phoneNumber,
           avatar: user?.photoURL,
           createdAt: firebase.database.ServerValue.TIMESTAMP,
         };
-        console.log(userData);
+        // console.log(userData);
         usersRef.add(userData).then((res: any) => {
           console.log(res);
         });
       }
-      console.log(additionalUserInfo, user);
+      history.push("/dashboard");
       // Alert.success("Signed in successful", 4000);
     } catch (err) {
       // Alert.info(err.message, 4000);
@@ -90,6 +90,10 @@ export default function SignIn() {
 
   const onGoogleSignIn = () => {
     signIn(new firebase.auth.GoogleAuthProvider());
+  };
+
+  const onSignIn = (e: MouseEvent) => {
+    e.preventDefault();
   };
 
   return (
@@ -153,6 +157,7 @@ export default function SignIn() {
                 size="large"
                 color="secondary"
                 className={classes.submit}
+                onClick={onSignIn}
               >
                 Sign In
               </Button>

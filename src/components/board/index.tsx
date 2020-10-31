@@ -14,6 +14,8 @@ import dayjs from "dayjs";
 import ShareIcon from "@material-ui/icons/Share";
 import EditIcon from "@material-ui/icons/Edit";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
+import DeleteRoundedIcon from "@material-ui/icons/DeleteRounded";
+import { red } from "@material-ui/core/colors";
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
@@ -108,6 +110,20 @@ export default function Board({ board }: IBoard) {
         >
           share
         </Button>
+        <IconButton
+          size="small"
+          color="primary"
+          aria-label="delete"
+          onClick={() => {}}
+        >
+          <DeleteRoundedIcon
+            style={{
+              fontSize: 20,
+              color: red[500],
+              cursor: "pointer",
+            }}
+          />
+        </IconButton>
       </CardActions>
     </Card>
   );
