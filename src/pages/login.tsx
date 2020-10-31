@@ -1,4 +1,4 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useState } from "react";
 import {
   Button,
   CssBaseline,
@@ -19,6 +19,7 @@ import { ReactComponent as Google } from "../static/google.svg";
 import { auth, usersRef } from "../misc/firebase";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
+import { notify, ToastContainer } from "../components/toast";
 const useStyles = makeStyles((theme) => ({
   paper: {
     paddingTop: theme.spacing(8),
@@ -58,7 +59,11 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
   const history = useHistory();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const signIn = async (provider: any) => {
+    setIsLoading(true);
     try {
       const { additionalUserInfo, user } = await auth.signInWithPopup(provider);
       console.log(additionalUserInfo?.username, user);
@@ -78,9 +83,11 @@ export default function SignIn() {
         });
       }
       history.push("/dashboard");
-      // Alert.success("Signed in successful", 4000);
+      notify("Login success!", "success");
+      setIsLoading(false);
     } catch (err) {
-      // Alert.info(err.message, 4000);
+      setIsLoading(false);
+      notify(err.message, "error");
     }
   };
 
@@ -94,11 +101,25 @@ export default function SignIn() {
 
   const onSignIn = (e: MouseEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        setIsLoading(false);
+        history.push("/dashboard");
+        notify("Login success!", "success");
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        notify(error.message, "error");
+      });
   };
 
   return (
     <Container maxWidth="xs">
       <CssBaseline />
+      <ToastContainer />
       <div className={classes.paper}>
         <Card>
           <CardHeader
@@ -116,6 +137,8 @@ export default function SignIn() {
           <CardContent className={classes.cardContent}>
             <form className={classes.form} noValidate>
               <TextField
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 variant="outlined"
                 margin="normal"
                 required
@@ -127,6 +150,8 @@ export default function SignIn() {
                 autoFocus
               />
               <TextField
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 variant="outlined"
                 margin="normal"
                 required
@@ -158,8 +183,9 @@ export default function SignIn() {
                 color="secondary"
                 className={classes.submit}
                 onClick={onSignIn}
+                disabled={isLoading}
               >
-                Sign In
+                Log in
               </Button>
               <Grid
                 container
@@ -189,6 +215,7 @@ export default function SignIn() {
                 </SvgIcon>
               }
               onClick={onGoogleSignIn}
+              disabled={isLoading}
             >
               Google
             </Button>
@@ -204,6 +231,7 @@ export default function SignIn() {
                 </SvgIcon>
               }
               onClick={onFacebookSignIn}
+              disabled={isLoading}
             >
               facebook
             </Button>

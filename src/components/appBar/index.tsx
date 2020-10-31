@@ -16,7 +16,7 @@ import {
   createStyles,
   Theme,
 } from "@material-ui/core/styles";
-import { Route, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import firebase from "firebase/app";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import AccountBoxRoundedIcon from "@material-ui/icons/AccountBoxRounded";
