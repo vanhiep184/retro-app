@@ -28,6 +28,7 @@ interface IColumn {
   column: {
     id: any;
     name: string;
+    [key: string]: any;
   };
   [key: string]: any;
 }
@@ -37,7 +38,9 @@ const Column = ({ column }: IColumn) => {
   const [isCreating, setIsCreating] = useState(false);
   const handleCreate = (card: any) => {
     console.log(card);
-    setCards([...cards, card]);
+    if (card && card.description) {
+      setCards([...cards, card]);
+    }
     setIsCreating(false);
   };
   const handleRemove = (card: any) => {

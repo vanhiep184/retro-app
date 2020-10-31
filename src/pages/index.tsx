@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Board, { CreateBoard } from "../components/board";
 import { makeStyles } from "@material-ui/core/styles";
-import { boardsRef } from "../misc/firebase";
+import { boardsRef, columnsRef } from "../misc/firebase";
 import firebase from "firebase/app";
+
 import {
   Typography,
   Grid,
   CssBaseline,
   Container,
   Card,
+  CardContent,
+  CardActions,
 } from "@material-ui/core";
-
+import Skeleton from "@material-ui/lab/Skeleton";
 const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(2),
@@ -32,12 +35,25 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  card: {
+  divider: {
     minHeight: 20,
     backgroundColor: theme.palette.primary.light,
   },
   headerText: {
     fontWeight: theme.typography.fontWeightMedium,
+  },
+  card: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  cardContent: {
+    flexGrow: 1,
+  },
+  cardActions: {
+    padding: theme.spacing(2),
+    display: "flex",
+    justifyContent: "flex-end",
   },
 }));
 
@@ -54,8 +70,10 @@ interface IBoard {
 export default function Home() {
   const classes = useStyles();
   const [boards, setBoards] = useState<IBoard[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const user = firebase.auth().currentUser;
   const getBoardsList = async () => {
+    setIsLoading(true);
     try {
       const resp = await boardsRef.get();
       let boardsResp: IBoard[] = [];
@@ -68,9 +86,10 @@ export default function Home() {
         boardsResp.push(boardEntity);
       });
       setBoards(boardsResp);
-      console.log(boards);
+      setIsLoading(false);
     } catch (error) {
       console.log("[Error] getting boards", error);
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -80,16 +99,37 @@ export default function Home() {
     // };
   }, []);
   const onCreateBoard = (nameBoard: string) => {
+    setIsLoading(true);
     const board: IBoard = {
       title: nameBoard,
       type: "default",
-      createdAt: firebase.database.ServerValue.TIMESTAMP,
-      createdBy: user?.uid,
-      updatedAt: firebase.database.ServerValue.TIMESTAMP,
-      updatedBy: user?.uid,
+      createdAt: new Date().toISOString(),
+      createdBy: user?.uid ? user.uid : "unknown",
+      updatedAt: new Date().toISOString(),
+      updatedBy: user?.uid ? user.uid : "unknown",
     };
-    boardsRef.add(board).then(() => {
+    boardsRef.add(board).then((board) => {
+      // Do create columns
+      const columns = [
+        {
+          boardId: board.id,
+          name: "Went Well",
+          order: 1,
+        },
+        {
+          boardId: board.id,
+          name: "To Improve",
+          order: 2,
+        },
+        {
+          boardId: board.id,
+          name: "Actions Item",
+          order: 3,
+        },
+      ];
+      columns.map((column) => columnsRef.add(column));
       getBoardsList();
+      setIsLoading(false);
     });
   };
 
@@ -107,7 +147,7 @@ export default function Home() {
           >
             My boards
           </Typography>
-          <Card className={classes.card}></Card>
+          <Card className={classes.divider}></Card>
         </Container>
       </div>
       <Container className={classes.cardGrid}>
@@ -117,11 +157,26 @@ export default function Home() {
               onClick={(nameBoard) => onCreateBoard(nameBoard)}
             ></CreateBoard>
           </Grid>
-          {Object.keys(boards).map((key: any) => (
-            <Grid item key={key} xs={12} sm={6} md={4}>
-              <Board board={boards[key]} />
+          {isLoading ? (
+            <Grid item xs={12} sm={6} md={4}>
+              <Card className={classes.card}>
+                <CardContent className={classes.cardContent}>
+                  <Skeleton />
+                  <Skeleton width="60%" />
+                </CardContent>
+                <CardActions className={classes.cardActions}>
+                  <Skeleton variant="rect" width="50%" />
+                  <Skeleton variant="rect" width="50%" />
+                </CardActions>
+              </Card>
             </Grid>
-          ))}
+          ) : (
+            Object.keys(boards).map((key: any) => (
+              <Grid item key={key} xs={12} sm={6} md={4}>
+                <Board board={boards[key]} />
+              </Grid>
+            ))
+          )}
         </Grid>
       </Container>
     </React.Fragment>

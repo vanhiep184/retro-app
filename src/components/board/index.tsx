@@ -6,7 +6,7 @@ import {
   IconButton,
   Button,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import CreateBoard from "./create";
@@ -52,14 +52,20 @@ interface IBoard {
 export default function Board({ board }: IBoard) {
   const classes = useStyles();
   const history = useHistory();
+  const [isRaising, setIsRaising] = useState<boolean>(false);
   const goToDetail = (id: any) => {
     history.push(`/board/${id}`);
   };
   return (
-    <Card className={classes.card}>
+    <Card
+      className={classes.card}
+      raised={isRaising}
+      onMouseEnter={() => setIsRaising(true)}
+      onMouseLeave={() => setIsRaising(false)}
+    >
       <CardContent
         className={classes.cardContent}
-        onClick={() => goToDetail(1123)}
+        onClick={() => goToDetail(board.id)}
       >
         <div className={classes.cardTitleContent}>
           <Typography gutterBottom variant="h5" component="h2">
@@ -82,7 +88,7 @@ export default function Board({ board }: IBoard) {
           className={classes.timer}
         >
           <QueryBuilderIcon style={{ fontSize: 12, marginRight: 4 }} />
-          {dayjs(board.createdAt).format("DD-MM-YYYY")}
+          {dayjs(board.createdAt).format("DD MMMM")}
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>

@@ -3,7 +3,7 @@ import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { Grid, Button, IconButton, Typography } from "@material-ui/core";
 import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
 import Column from "../../components/column";
-import { columnsRef } from "../../misc/firebase";
+import { boardsRef, columnsRef } from "../../misc/firebase";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -44,32 +44,56 @@ interface IBoard {
   [key: string]: any;
 }
 
-const BoardDetail = ({ id, props }: IBoard) => {
+const BoardDetail = ({ ...props }: IBoard) => {
   const classes = useStyles();
   const [columns, setColumns] = useState<any[]>([]);
+  const [board, setBoard] = useState<any>(null);
   useEffect(() => {
-    const columnsDefault: any[] = [
-      {
-        id: 1,
-        name: "Went Well",
-      },
-      {
-        id: 2,
-        name: "To Improve",
-      },
-      {
-        id: 3,
-        name: "Actions Item",
-      },
-    ];
-    setColumns([...columnsDefault]);
+    const columnsDB: any[] = [];
+    const boardId = props.match?.params?.boardId;
+    boardsRef
+      .doc(boardId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const boardDB = {
+            id: boardId,
+            ...doc.data(),
+          };
+          setBoard(boardDB);
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch((error) => {
+        console.error("Error getting documents: ", error);
+      });
+    // TODO: get columns by boardId
+    columnsRef
+      .where("boardId", "==", boardId)
+      .limit(3)
+      .get()
+      .then((snapshot) => {
+        snapshot.forEach(function (doc) {
+          const column = {
+            id: doc.id,
+            ...doc.data(),
+          };
+          columnsDB.unshift(column);
+          setColumns([...columnsDB]);
+        });
+      })
+      .catch((error) => {
+        console.error("Error getting documents: ", error);
+      });
   }, []);
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs={12} className={classes.boardTitle}>
           <Typography variant="body1" className={classes.title}>
-            Board Title
+            {board && board.title}
           </Typography>
           <Button size="small" className={classes.shareButton}>
             share

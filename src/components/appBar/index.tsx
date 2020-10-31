@@ -86,10 +86,9 @@ const Navigation = () => {
   };
 
   useEffect(() => {
-    console.log(`currentUser`, firebase.auth().currentUser);
     firebase.auth().onAuthStateChanged((auth: any) => {
       if (auth) {
-        console.log("User Exists", auth);
+        console.log("User Exists");
         setAuthUser(auth);
       } else {
         setAuthUser(null);

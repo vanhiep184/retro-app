@@ -57,9 +57,11 @@ const Layout = () => {
             <SignUp />
           </PublishRoute>
           <PublishRoute exact path="/dashboard" component={App} />
-          <PublishRoute exact path="/board/:boardId">
-            <BoardDetail id={123}></BoardDetail>
-          </PublishRoute>
+          <PublishRoute
+            exact
+            path="/board/:boardId"
+            render={(props: any) => <BoardDetail {...props} />}
+          ></PublishRoute>
           <Route component={PageNotFound}></Route>
         </Switch>
       </main>
