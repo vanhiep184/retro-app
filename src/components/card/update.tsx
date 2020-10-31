@@ -53,7 +53,7 @@ const Update = ({ card, color, onClick }: IUpdate) => {
   const onUpdate = (action: string) => {
     const updatedCard = { ...card };
     updatedCard.description = description;
-    onClick({ action, card });
+    onClick({ action, card: updatedCard });
   };
   return (
     <Card

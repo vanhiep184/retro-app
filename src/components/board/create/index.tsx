@@ -105,7 +105,7 @@ export default function CreateBoard({ onClick }: ICreateBoard) {
         open={open}
         TransitionComponent={Transition}
         keepMounted
-        maxWidth="lg"
+        maxWidth="xl"
         onClose={handleClose}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
@@ -113,7 +113,7 @@ export default function CreateBoard({ onClick }: ICreateBoard) {
       >
         <DialogTitle
           id="alert-dialog-slide-title"
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", minWidth: 400 }}
         >
           {"Create Board"}
           <CloseRoundedIcon

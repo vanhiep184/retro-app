@@ -53,7 +53,7 @@ const Create = ({ card, color, onClick }: ICreate) => {
   const onCreate = () => {
     const newCard = { ...card };
     newCard.description = description;
-    onClick(card);
+    onClick({ ...newCard });
   };
   return (
     <Card

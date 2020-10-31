@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
+      paddingLeft: 20,
     },
     account: {
       backgroundColor: "transparent",
@@ -107,7 +108,7 @@ const Navigation = () => {
   };
 
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" style={{ boxShadow: "none" }}>
       <Toolbar className={classes.toolbar} variant="dense">
         <Typography
           variant="h6"

@@ -71,6 +71,18 @@ const Column = ({ column }: IColumn) => {
   };
   const handleUpdate = (card: any) => {
     console.log(`update`, card);
+    const cardId = card.id;
+    if (!cardId) return;
+    cardsRef
+      .doc(cardId)
+      .update(card)
+      .then(() => {
+        const cardsDB = cards.map((cardItem) => {
+          if (cardItem.id === cardId) return card;
+          return cardItem;
+        });
+        setCards([...cardsDB]);
+      });
   };
   const getCardList = () => {
     // TODO: get cards by columnId
@@ -122,7 +134,7 @@ const Column = ({ column }: IColumn) => {
         <CardCreate
           color={column.color}
           card={{
-            description: `Content is showed in there. Content is showed in there.`,
+            description: ``,
           }}
           onClick={(card: any) => handleCreate(card)}
         ></CardCreate>
