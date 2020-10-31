@@ -115,16 +115,19 @@ export default function Home() {
           boardId: board.id,
           name: "Went Well",
           order: 1,
+          color: "#8E44AD",
         },
         {
           boardId: board.id,
           name: "To Improve",
           order: 2,
+          color: "#27AE60",
         },
         {
           boardId: board.id,
           name: "Actions Item",
           order: 3,
+          color: "#E67E22",
         },
       ];
       columns.map((column) => columnsRef.add(column));

@@ -36,38 +36,67 @@ const Column = ({ column }: IColumn) => {
   const classes = useStyles();
   const [cards, setCards] = useState<any[]>([]);
   const [isCreating, setIsCreating] = useState(false);
+  const columnId = column.id;
   const handleCreate = (card: any) => {
-    console.log(card);
     if (card && card.description) {
-      setCards([...cards, card]);
+      const cardDB = Object.assign(
+        {
+          columnId,
+        },
+        card
+      );
+      cardsRef.add(cardDB).then((doc) => {
+        const card = {
+          id: doc.id,
+          ...cardDB,
+        };
+        setCards([...cards, card]);
+      });
     }
     setIsCreating(false);
   };
   const handleRemove = (card: any) => {
-    console.log(card);
-    // setCards([...cards, card]);
+    const cardId = card.id;
+    if (!cardId) return;
+    cardsRef
+      .doc(cardId)
+      .delete()
+      .then(() => {
+        const cardsDB = cards.filter((card) => card.id !== cardId);
+        setCards([...cardsDB]);
+      })
+      .catch((error) => {
+        console.error("Error delete documents: ", error);
+      });
   };
-  useEffect(() => {
-    const cardsDefault: any[] = [
-      {
-        id: 1,
-        description: `Content is showed in there. Content is showed in there.`,
-      },
-      {
-        id: 2,
-        description: `Content is showed in there. Content is showed in there.`,
-      },
-      {
-        id: 3,
-        description: `Content is showed in there. Content is showed in there.`,
-      },
-    ];
-    setCards([...cardsDefault]);
-  }, []);
+  const handleUpdate = (card: any) => {
+    console.log(`update`, card);
+  };
+  const getCardList = () => {
+    // TODO: get cards by columnId
+    const cardsDB: any[] = [];
+    cardsRef
+      .where("columnId", "==", columnId)
+      .get()
+      .then((snapshot) => {
+        snapshot.forEach(function (doc) {
+          const card = {
+            id: doc.id,
+            ...doc.data(),
+          };
+          cardsDB.push(card);
+          setCards([...cardsDB]);
+        });
+      })
+      .catch((error) => {
+        console.error("Error getting documents: ", error);
+      });
+  };
+  useEffect(getCardList, []);
   return (
     <div>
       <div className={classes.columnTitle}>
-        <StopRoundedIcon color="secondary" />
+        <StopRoundedIcon style={{ color: column.color }} />
         {column.name}
       </div>
       <Button
@@ -84,11 +113,14 @@ const Column = ({ column }: IColumn) => {
           <CardView
             key={card.id}
             card={card}
+            color={column.color}
             onRemove={(card: any) => handleRemove(card)}
+            onUpdate={(card: any) => handleUpdate(card)}
           ></CardView>
         ))}
       {isCreating && (
         <CardCreate
+          color={column.color}
           card={{
             description: `Content is showed in there. Content is showed in there.`,
           }}

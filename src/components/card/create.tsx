@@ -47,7 +47,7 @@ interface ICreate {
   [key: string]: any;
 }
 
-const Create = ({ card, onClick }: ICreate) => {
+const Create = ({ card, color, onClick }: ICreate) => {
   const classes = useStyles();
   const [description, setDescription] = useState(card.description);
   const onCreate = () => {
@@ -60,7 +60,7 @@ const Create = ({ card, onClick }: ICreate) => {
       color="primary"
       className={classes.cardItem}
       style={{
-        border: "2px solid red",
+        border: `2px solid ${color}`,
       }}
     >
       <CardContent className={classes.cardContent}>

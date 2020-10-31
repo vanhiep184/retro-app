@@ -24,16 +24,16 @@ interface IView {
   [key: string]: any;
 }
 
-const View = ({ card, onRemove }: IView) => {
+const View = ({ card, color, onRemove, onUpdate }: IView) => {
   const classes = useStyles();
   const [isEditMode, setIsEditMode] = useState(false);
   const handleUpdate = (data: any) => {
-    console.log(data);
     if (data.action === "remove") {
       onRemove(data.card);
       return;
     }
     // Do update
+    onUpdate(data.card);
     setIsEditMode(false);
   };
   return (
@@ -41,6 +41,7 @@ const View = ({ card, onRemove }: IView) => {
       {isEditMode ? (
         <Update
           card={card}
+          color={color}
           onClick={(card: any) => handleUpdate(card)}
         ></Update>
       ) : (
@@ -48,7 +49,7 @@ const View = ({ card, onRemove }: IView) => {
           color="primary"
           className={classes.cardItem}
           style={{
-            backgroundColor: "red",
+            backgroundColor: color,
             color: "white",
           }}
         >
