@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
-
+import "firebase/auth";
+import "firebase/database";
 const config = {
     apiKey: "AIzaSyB_BMemPgLXgaL7Ph_3pb5Awo45xHWSss8",
     authDomain: "retro-lvh.firebaseapp.com",
@@ -11,12 +12,14 @@ const config = {
     appId: "1:846312670366:web:112b3b187789e3c16a678f",
     measurementId: "G-GT0ML5NQ1C",
 };
-const app = firebase.initializeApp(config);
+firebase.initializeApp(config);
 
-const db = firebase.firestore();
+const auth = firebase.auth();
 
-const boardsRef = db.collection("Boards");
-const columnsRef = db.collection("Columns");
-const cardsRef = db.collection("Cards");
-
-export { app, boardsRef, columnsRef, cardsRef };
+const fs = firebase.firestore();
+const database = firebase.database();
+const boardsRef = fs.collection("Boards");
+const columnsRef = fs.collection("Columns");
+const cardsRef = fs.collection("Cards");
+const usersRef = fs.collection("Users");
+export { auth, database, usersRef, boardsRef, columnsRef, cardsRef };

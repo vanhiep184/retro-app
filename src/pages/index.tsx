@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Board, { CreateBoard } from "../components/board";
 import { makeStyles } from "@material-ui/core/styles";
 import { boardsRef } from "../misc/firebase";
+import firebase from "firebase/app";
 import {
   Typography,
   Grid,
@@ -44,9 +45,9 @@ interface IBoard {
   id?: string;
   title: string;
   type: "default";
-  createdAt: string;
+  createdAt: any;
   createdBy: string;
-  updatedAt: string;
+  updatedAt: any;
   updatedBy: string;
   [key: string]: any;
 }
@@ -81,9 +82,9 @@ export default function Home() {
     const board: IBoard = {
       title: `Board Name ${Math.ceil(Math.random() * (15 - 3) + 2)}`,
       type: "default",
-      createdAt: new Date().toISOString(),
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
       createdBy: "1",
-      updatedAt: new Date().toISOString(),
+      updatedAt: firebase.database.ServerValue.TIMESTAMP,
       updatedBy: "1",
     };
     boardsRef.add(board).then(() => {

@@ -10,6 +10,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
 // import PrivateRoute from "../routes/private";
 import PublishRoute from "../routes/publish";
+import SignUp from "../pages/sign-up";
 
 const theme = createMuiTheme({
   palette: {
@@ -34,7 +35,7 @@ const theme = createMuiTheme({
 });
 const useStyles = makeStyles((theme) => ({
   main: {
-    marginTop: 60,
+    paddingTop: 60,
     height: "100%",
   },
 }));
@@ -51,6 +52,9 @@ const Layout = () => {
           <PublishRoute exact path="/" component={App}></PublishRoute>
           <PublishRoute exact path="/login">
             <Login />
+          </PublishRoute>
+          <PublishRoute exact path="/signup">
+            <SignUp />
           </PublishRoute>
           <PublishRoute exact path="/dashboard" component={App} />
           <PublishRoute exact path="/board/:boardId">
