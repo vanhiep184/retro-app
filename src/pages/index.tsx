@@ -45,15 +45,16 @@ interface IBoard {
   id?: string;
   title: string;
   type: "default";
-  createdAt: any;
-  createdBy: string;
-  updatedAt: any;
-  updatedBy: string;
+  createdAt?: any;
+  createdBy?: any;
+  updatedAt?: any;
+  updatedBy?: any;
   [key: string]: any;
 }
 export default function Home() {
   const classes = useStyles();
   const [boards, setBoards] = useState<IBoard[]>([]);
+  const user = firebase.auth().currentUser;
   const getBoardsList = async () => {
     try {
       const resp = await boardsRef.get();
@@ -78,14 +79,14 @@ export default function Home() {
     //   cleanup;
     // };
   }, []);
-  const onCreateBoard = () => {
+  const onCreateBoard = (nameBoard: string) => {
     const board: IBoard = {
-      title: `Board Name ${Math.ceil(Math.random() * (15 - 3) + 2)}`,
+      title: nameBoard,
       type: "default",
       createdAt: firebase.database.ServerValue.TIMESTAMP,
-      createdBy: "1",
+      createdBy: user?.uid,
       updatedAt: firebase.database.ServerValue.TIMESTAMP,
-      updatedBy: "1",
+      updatedBy: user?.uid,
     };
     boardsRef.add(board).then(() => {
       getBoardsList();
@@ -112,7 +113,9 @@ export default function Home() {
       <Container className={classes.cardGrid}>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6} md={4}>
-            <CreateBoard onClick={() => onCreateBoard()}></CreateBoard>
+            <CreateBoard
+              onClick={(nameBoard) => onCreateBoard(nameBoard)}
+            ></CreateBoard>
           </Grid>
           {Object.keys(boards).map((key: any) => (
             <Grid item key={key} xs={12} sm={6} md={4}>
