@@ -4,6 +4,8 @@ import { Grid, Button, IconButton, Typography } from "@material-ui/core";
 import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
 import Column from "../../components/column";
 import { boardsRef, columnsRef } from "../../misc/firebase";
+import { notify, ToastContainer } from "../../components/toast";
+import CopyToClipboard from "react-copy-to-clipboard";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -88,16 +90,28 @@ const BoardDetail = ({ ...props }: IBoard) => {
         console.error("Error getting documents: ", error);
       });
   }, []);
+  const onShare = () => {
+    notify("Board URL copied! Share it with people to collaborate.", "success");
+  };
   return (
     <div className={classes.root}>
+      <ToastContainer />
       <Grid container spacing={3}>
         <Grid item xs={12} className={classes.boardTitle}>
           <Typography variant="body1" className={classes.title}>
             {board && board.title}
           </Typography>
-          <Button size="small" className={classes.shareButton}>
-            share
-          </Button>
+          {board && (
+            <CopyToClipboard
+              text={`https://retro-lvh.web.app/board/${board.id}`}
+              onCopy={onShare}
+            >
+              <Button size="small" className={classes.shareButton}>
+                share
+              </Button>
+            </CopyToClipboard>
+          )}
+
           <IconButton size="small" color="primary" aria-label="setting">
             <SettingsRoundedIcon color="secondary"></SettingsRoundedIcon>
           </IconButton>

@@ -23,6 +23,8 @@ import DeleteRoundedIcon from "@material-ui/icons/DeleteRounded";
 import { red } from "@material-ui/core/colors";
 import { TransitionProps } from "@material-ui/core/transitions";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
+import { notify, ToastContainer } from "../toast";
+import CopyToClipboard from "react-copy-to-clipboard";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement<any, any> },
@@ -126,8 +128,12 @@ export default function Board({ board, onClick }: IBoard) {
   const onRemoveBoard = () => {
     onClick("remove", board);
   };
+  const onShare = () => {
+    notify("Board URL copied! Share it with people to collaborate.", "success");
+  };
   return (
     <>
+      <ToastContainer />
       <Card
         className={classes.card}
         raised={isRaising}
@@ -173,18 +179,20 @@ export default function Board({ board, onClick }: IBoard) {
           >
             edit
           </Button>
-          <Button
-            fullWidth
-            size="small"
-            color="primary"
-            aria-label="share board"
-            onClick={() => {
-              alert("Clicked Icon share board");
-            }}
-            startIcon={<ShareIcon fontSize="inherit" />}
+          <CopyToClipboard
+            text={`https://retro-lvh.web.app/board/${board.id}`}
+            onCopy={onShare}
           >
-            share
-          </Button>
+            <Button
+              fullWidth
+              size="small"
+              color="primary"
+              aria-label="share board"
+              startIcon={<ShareIcon fontSize="inherit" />}
+            >
+              share
+            </Button>
+          </CopyToClipboard>
           <IconButton
             size="small"
             color="primary"
