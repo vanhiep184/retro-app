@@ -36,8 +36,9 @@ const Column = ({ column }: IColumn) => {
   const classes = useStyles();
   const [cards, setCards] = useState<any[]>([]);
   const [isCreating, setIsCreating] = useState(false);
-  const columnId = column.id;
+
   const handleCreate = (card: any) => {
+    const columnId = column.id;
     if (card && card.description) {
       const cardDB = Object.assign(
         {
@@ -85,6 +86,7 @@ const Column = ({ column }: IColumn) => {
       });
   };
   const getCardList = () => {
+    const columnId = column.id;
     // TODO: get cards by columnId
     const cardsDB: any[] = [];
     cardsRef
@@ -104,9 +106,9 @@ const Column = ({ column }: IColumn) => {
         console.error("Error getting documents: ", error);
       });
   };
-  useEffect(getCardList, []);
+  useEffect(() => getCardList, []);
   return (
-    <div>
+    <>
       <div className={classes.columnTitle}>
         <StopRoundedIcon style={{ color: column.color }} />
         {column.name}
@@ -139,7 +141,7 @@ const Column = ({ column }: IColumn) => {
           onClick={(card: any) => handleCreate(card)}
         ></CardCreate>
       )}
-    </div>
+    </>
   );
 };
 

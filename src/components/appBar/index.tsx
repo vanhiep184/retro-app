@@ -76,8 +76,8 @@ const Navigation = () => {
   const classes = useStyles();
   const history = useHistory();
   const [authUser, setAuthUser] = useState<any>(null);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -87,12 +87,16 @@ const Navigation = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     firebase.auth().onAuthStateChanged((auth: any) => {
       if (auth) {
         console.log("User Exists");
         setAuthUser(auth);
+        setIsLoading(false);
       } else {
         setAuthUser(null);
+        setIsLoading(false);
+        // history.push("/login");
         console.log("User is not exists");
       }
     });
@@ -103,6 +107,7 @@ const Navigation = () => {
       .auth()
       .signOut()
       .then(() => {
+        setAuthUser(null);
         history.push("/login");
       });
   };
@@ -118,47 +123,48 @@ const Navigation = () => {
         >
           Retro LVH
         </Typography>
-        {authUser ? (
-          <div>
-            <Chip
-              aria-controls="customized-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-              avatar={
-                <Avatar
-                  alt={authUser.displayName}
-                  src={authUser.photoURL}
-                ></Avatar>
-              }
-              label={authUser.displayName}
-              className={classes.account}
-            />
-            <StyledMenu
-              id="customized-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <StyledMenuItem>
-                <ListItemIcon>
-                  <AccountBoxRoundedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="Profile" />
-              </StyledMenuItem>
-              <StyledMenuItem onClick={logout}>
-                <ListItemIcon>
-                  <ExitToAppRoundedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="Log out" />
-              </StyledMenuItem>
-            </StyledMenu>
-          </div>
-        ) : (
-          <Button color="inherit" href="/login">
-            Sign in
-          </Button>
-        )}
+        {!isLoading &&
+          (authUser ? (
+            <div>
+              <Chip
+                aria-controls="customized-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+                avatar={
+                  <Avatar
+                    alt={authUser.displayName}
+                    src={authUser.photoURL}
+                  ></Avatar>
+                }
+                label={authUser.displayName}
+                className={classes.account}
+              />
+              <StyledMenu
+                id="customized-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <AccountBoxRoundedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
+                </StyledMenuItem>
+                <StyledMenuItem onClick={logout}>
+                  <ListItemIcon>
+                    <ExitToAppRoundedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Log out" />
+                </StyledMenuItem>
+              </StyledMenu>
+            </div>
+          ) : (
+            <Button color="inherit" href="/login">
+              Sign in
+            </Button>
+          ))}
       </Toolbar>
     </AppBar>
   );

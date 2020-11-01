@@ -26,10 +26,10 @@ const Transition = React.forwardRef(function Transition(
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     iconCreateButton: {
-      width: 48,
-      height: 48,
+      width: 50,
+      height: 50,
       borderRadius: "50%",
-      backgroundColor: theme.palette.info.dark,
+      backgroundColor: theme.palette.secondary.main,
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
@@ -43,12 +43,16 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
     },
     card: {
+      padding: 30,
       minHeight: 100,
       height: "100%",
       width: "100%",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      "&:hover": {
+        border: "2px dashed #fd7014",
+      },
     },
     buttonBase: {
       minHeight: 100,
@@ -75,6 +79,7 @@ export default function CreateBoard({ onClick }: ICreateBoard) {
     setOpen(true);
   };
   const handleClose = () => {
+    setNameBoard("");
     setOpen(false);
   };
   const onCreateBoard = () => {
@@ -93,7 +98,7 @@ export default function CreateBoard({ onClick }: ICreateBoard) {
               <Typography
                 style={{ marginTop: 10 }}
                 variant="subtitle2"
-                color="textSecondary"
+                color="secondary"
               >
                 Create Board
               </Typography>

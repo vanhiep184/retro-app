@@ -135,7 +135,42 @@ export default function Home() {
       setIsLoading(false);
     });
   };
-
+  const receiveAction = (action: string, board: any) => {
+    if (action === "update") {
+      // TODO: Update board
+      onUpdateBoard(board);
+      return;
+    }
+    if (action === "remove") {
+      // TODO Remove board
+      onRemoveBoard(board);
+    }
+  };
+  const onUpdateBoard = (board: any) => {
+    const boardId = board.id;
+    if (!boardId) return;
+    boardsRef
+      .doc(boardId)
+      .update(board)
+      .catch((error) => {
+        console.error("Error delete documents: ", error);
+      });
+    console.log("update", board);
+  };
+  const onRemoveBoard = (board: any) => {
+    const boardId = board.id;
+    if (!boardId) return;
+    boardsRef
+      .doc(boardId)
+      .delete()
+      .then(() => {
+        const cardsDB = boards.filter((board) => board.id !== boardId);
+        setBoards([...cardsDB]);
+      })
+      .catch((error) => {
+        console.error("Error delete documents: ", error);
+      });
+  };
   return (
     <React.Fragment>
       <CssBaseline />
@@ -174,9 +209,13 @@ export default function Home() {
               </Card>
             </Grid>
           ) : (
+            boards &&
             Object.keys(boards).map((key: any) => (
               <Grid item key={key} xs={12} sm={6} md={4}>
-                <Board board={boards[key]} />
+                <Board
+                  board={boards[key]}
+                  onClick={(action, board) => receiveAction(action, board)}
+                />
               </Grid>
             ))
           )}
