@@ -101,7 +101,6 @@ const Column = ({ column }: IColumn) => {
           cardsDB.push(card);
         });
         setCards([...cardsDB]);
-        console.log(cardsDB);
       })
       .catch((error) => {
         console.error("Error getting documents: ", error);

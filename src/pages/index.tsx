@@ -75,18 +75,25 @@ export default function Home() {
   const getBoardsList = async () => {
     setIsLoading(true);
     try {
-      const resp = await boardsRef.where("createdBy", "==", user?.uid).get();
-      let boardsResp: IBoard[] = [];
-      resp.forEach((board: any) => {
-        const data = board.data();
-        const boardEntity: IBoard = {
-          id: board.id,
-          ...data,
-        };
-        boardsResp.push(boardEntity);
+      firebase.auth().onAuthStateChanged(async (auth: any) => {
+        if (auth) {
+          console.log("User Exists", auth.uid);
+          const resp = await boardsRef
+            .where("createdBy", "==", auth?.uid)
+            .get();
+          let boardsResp: IBoard[] = [];
+          resp.forEach((board: any) => {
+            const data = board.data();
+            const boardEntity: IBoard = {
+              id: board.id,
+              ...data,
+            };
+            boardsResp.push(boardEntity);
+          });
+          setBoards(boardsResp);
+          setIsLoading(false);
+        }
       });
-      setBoards(boardsResp);
-      setIsLoading(false);
     } catch (error) {
       console.log("[Error] getting boards", error);
       setIsLoading(false);
@@ -98,7 +105,7 @@ export default function Home() {
     //   cleanup;
     // };
   }, []);
-  const onCreateBoard = (nameBoard: string) => {
+  const onCreateBoard = async (nameBoard: string) => {
     setIsLoading(true);
     const board: IBoard = {
       title: nameBoard,
