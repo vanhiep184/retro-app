@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      border: "2px dashed #c0d8d8",
       "&:hover": {
         border: "2px dashed #fd7014",
       },

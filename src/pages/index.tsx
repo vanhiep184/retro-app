@@ -75,7 +75,7 @@ export default function Home() {
   const getBoardsList = async () => {
     setIsLoading(true);
     try {
-      const resp = await boardsRef.get();
+      const resp = await boardsRef.where("createdBy", "==", user?.uid).get();
       let boardsResp: IBoard[] = [];
       resp.forEach((board: any) => {
         const data = board.data();
