@@ -99,14 +99,17 @@ const Column = ({ column }: IColumn) => {
             ...doc.data(),
           };
           cardsDB.push(card);
-          setCards([...cardsDB]);
         });
+        setCards([...cardsDB]);
+        console.log(cardsDB);
       })
       .catch((error) => {
         console.error("Error getting documents: ", error);
       });
   };
-  useEffect(() => getCardList, []);
+  useEffect(() => {
+    getCardList();
+  }, []);
   return (
     <>
       <div className={classes.columnTitle}>
