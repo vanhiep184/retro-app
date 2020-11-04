@@ -54,7 +54,13 @@ const View = ({ card, color, onRemove, onUpdate }: IView) => {
           }}
         >
           <div className={classes.cardContentView}>
-            <Typography>{card.description}</Typography>
+            <Typography
+              style={{
+                whiteSpace: "pre-line",
+              }}
+            >
+              {card.description}
+            </Typography>
             <IconButton
               size="small"
               color="primary"
