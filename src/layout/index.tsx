@@ -4,10 +4,12 @@ import Navigation from "../components/appBar";
 import BoardDetail from "../pages/board/_id";
 import PageNotFound from "../pages/not-found";
 import Login from "../pages/login";
+import Profile from "../pages/profile";
 import { Route, Switch } from "react-router-dom";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
+import { ToastContainer } from "../components/toast";
 // import PrivateRoute from "../routes/private";
 import PublishRoute from "../routes/publish";
 import SignUp from "../pages/sign-up";
@@ -36,6 +38,7 @@ const Layout = () => {
   return (
     <ThemeProvider theme={theme}>
       <Navigation></Navigation>
+      <ToastContainer />
       <main className={classes.main}>
         <Switch>
           {/* <PrivateRoute exact path="/">
@@ -47,6 +50,9 @@ const Layout = () => {
           </PublishRoute>
           <PublishRoute exact path="/signup">
             <SignUp />
+          </PublishRoute>
+          <PublishRoute exact path="/profile">
+            <Profile />
           </PublishRoute>
           <PublishRoute exact path="/dashboard" component={App} />
           <PublishRoute

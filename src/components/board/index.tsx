@@ -223,7 +223,7 @@ export default function Board({ board, onClick }: IBoard) {
           id="alert-dialog-slide-title"
           style={{ textAlign: "center", minWidth: 400 }}
         >
-          {"Create Board"}
+          {"Edit Board"}
           <CloseRoundedIcon
             className={classes.closeButton}
             onClick={handleClose}

@@ -146,7 +146,7 @@ const Navigation = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <StyledMenuItem>
+                <StyledMenuItem onClick={() => history.push("/profile")}>
                   <ListItemIcon>
                     <AccountBoxRoundedIcon fontSize="small" />
                   </ListItemIcon>
