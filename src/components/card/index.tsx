@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
     cardItem: {
       minHeight: theme.spacing(8),
       backgroundColor: theme.palette.common.white,
-      margin: theme.spacing(1, 0, 1),
+      margin: theme.spacing(0, 0, 1),
     },
     cardContentView: {
       padding: theme.spacing(1),

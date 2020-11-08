@@ -5,7 +5,9 @@ import AddIcon from "@material-ui/icons/Add";
 import CardView from "../../components/card";
 import CardCreate from "../../components/card/create";
 import { cardsRef } from "../../misc/firebase";
+import { Droppable, Draggable } from "react-beautiful-dnd";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { AnyAaaaRecord } from "dns";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
@@ -32,9 +34,9 @@ interface IColumn {
   };
   [key: string]: any;
 }
-const Column = ({ column }: IColumn) => {
+const Column = ({ column, cards, onHandler }: IColumn) => {
   const classes = useStyles();
-  const [cards, setCards] = useState<any[]>([]);
+  // const [cards, setCards] = useState<any[]>(cardsColumn);
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreate = (card: any) => {
@@ -46,69 +48,19 @@ const Column = ({ column }: IColumn) => {
         },
         card
       );
-      cardsRef.add(cardDB).then((doc) => {
-        const card = {
-          id: doc.id,
-          ...cardDB,
-        };
-        setCards([...cards, card]);
-      });
+      onHandler("create", cardDB);
     }
-    setIsCreating(false);
   };
   const handleRemove = (card: any) => {
-    const cardId = card.id;
-    if (!cardId) return;
-    cardsRef
-      .doc(cardId)
-      .delete()
-      .then(() => {
-        const cardsDB = cards.filter((card) => card.id !== cardId);
-        setCards([...cardsDB]);
-      })
-      .catch((error) => {
-        console.error("Error delete documents: ", error);
-      });
+    onHandler("remove", card);
   };
   const handleUpdate = (card: any) => {
-    console.log(`update`, card);
-    const cardId = card.id;
-    if (!cardId) return;
-    cardsRef
-      .doc(cardId)
-      .update(card)
-      .then(() => {
-        const cardsDB = cards.map((cardItem) => {
-          if (cardItem.id === cardId) return card;
-          return cardItem;
-        });
-        setCards([...cardsDB]);
-      });
+    onHandler("update", card);
   };
-  const getCardList = () => {
-    const columnId = column.id;
-    // TODO: get cards by columnId
-    const cardsDB: any[] = [];
-    cardsRef
-      .where("columnId", "==", columnId)
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach(function (doc) {
-          const card = {
-            id: doc.id,
-            ...doc.data(),
-          };
-          cardsDB.push(card);
-        });
-        setCards([...cardsDB]);
-      })
-      .catch((error) => {
-        console.error("Error getting documents: ", error);
-      });
-  };
+
   useEffect(() => {
-    getCardList();
-  }, []);
+    setIsCreating(false);
+  }, [cards]);
   return (
     <>
       <div className={classes.columnTitle}>
@@ -124,25 +76,70 @@ const Column = ({ column }: IColumn) => {
         startIcon={<AddIcon style={{ fontSize: 15 }} />}
         onClick={() => setIsCreating(true)}
       ></Button>
-      {cards &&
-        cards.map((card) => (
-          <CardView
-            key={card.id}
-            card={card}
-            color={column.color}
-            onRemove={(card: any) => handleRemove(card)}
-            onUpdate={(card: any) => handleUpdate(card)}
-          ></CardView>
-        ))}
-      {isCreating && (
-        <CardCreate
-          color={column.color}
-          card={{
-            description: ``,
-          }}
-          onClick={(card: any) => handleCreate(card)}
-        ></CardCreate>
-      )}
+      <Droppable droppableId={column.id} key={column.id}>
+        {(provided: any, snapshot: any) => {
+          return (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={{
+                padding: 4,
+                height: "100%",
+              }}
+            >
+              {cards &&
+                cards.map((card: any, index: any) => (
+                  <Draggable key={card.id} draggableId={card.id} index={index}>
+                    {(provided: any, snapshot: any) => {
+                      return (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={{
+                            userSelect: "none",
+                            padding: 0,
+                            margin: "0 0 8px 0",
+                            minHeight: "50px",
+                            color: "white",
+                            ...provided.draggableProps.style,
+                          }}
+                        >
+                          <CardView
+                            key={card.id}
+                            card={card}
+                            color={column.color}
+                            onRemove={(card: any) => handleRemove(card)}
+                            onUpdate={(card: any) => handleUpdate(card)}
+                          ></CardView>
+                        </div>
+                      );
+                    }}
+                  </Draggable>
+                ))}
+              {isCreating && (
+                <CardCreate
+                  color={column.color}
+                  card={{
+                    description: ``,
+                  }}
+                  onClick={(card: any) => handleCreate(card)}
+                ></CardCreate>
+              )}
+              {snapshot.isDraggingOver && (
+                <div
+                  style={{
+                    height: 6,
+                    width: "100%",
+                    backgroundColor: column.color,
+                    borderRadius: 2,
+                  }}
+                ></div>
+              )}
+            </div>
+          );
+        }}
+      </Droppable>
     </>
   );
 };
