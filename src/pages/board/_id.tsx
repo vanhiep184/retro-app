@@ -97,18 +97,32 @@ const BoardDetail = ({ ...props }: IBoard) => {
       };
       cardsRef.doc(cardId).update(card);
     } else {
-      console.log("iam moving index");
-      // const column = columns[source.droppableId];
-      // const copiedItems = [...column.items];
-      // const [removed] = copiedItems.splice(source.index, 1);
-      // copiedItems.splice(destination.index, 0, removed);
-      // setColumns({
-      //   ...columns,
-      //   [source.droppableId]: {
-      //     ...column,
-      //     items: copiedItems,
-      //   },
-      // });
+      console.log("iam moving index", results);
+      const sourceColumn = columns.find(
+        (column: any) => column.id === source.droppableId
+      );
+      const copiedCards = [...sourceColumn.cards];
+      const [removed] = copiedCards.splice(source.index, 1);
+      copiedCards.splice(destination.index, 0, removed);
+      setColumns(
+        columns.map((column: any) => {
+          if (column.id === source.droppableId) {
+            const column = {
+              ...sourceColumn,
+              cards: copiedCards.map((card, index) => {
+                cardsRef.doc(card.id).update({ index });
+                const cardTemp = {
+                  ...card,
+                  index,
+                };
+                return cardTemp;
+              }),
+            };
+            return column;
+          }
+          return column;
+        })
+      );
     }
   };
   const onHandler = (action: string, card: any) => {
@@ -126,7 +140,11 @@ const BoardDetail = ({ ...props }: IBoard) => {
     const columnId = card.columnId;
     if (!columnId) return;
     const column = columns.find((column: any) => column.id === columnId);
-    cardsRef.add(card).then((doc) => {
+    const cardTemp = {
+      ...card,
+      index: column.cards.length,
+    };
+    cardsRef.add(cardTemp).then((doc) => {
       const cardDB = {
         id: doc.id,
         ...card,

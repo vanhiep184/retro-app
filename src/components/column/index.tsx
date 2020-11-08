@@ -4,10 +4,8 @@ import StopRoundedIcon from "@material-ui/icons/StopRounded";
 import AddIcon from "@material-ui/icons/Add";
 import CardView from "../../components/card";
 import CardCreate from "../../components/card/create";
-import { cardsRef } from "../../misc/firebase";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { AnyAaaaRecord } from "dns";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
@@ -88,35 +86,41 @@ const Column = ({ column, cards, onHandler }: IColumn) => {
               }}
             >
               {cards &&
-                cards.map((card: any, index: any) => (
-                  <Draggable key={card.id} draggableId={card.id} index={index}>
-                    {(provided: any, snapshot: any) => {
-                      return (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={{
-                            userSelect: "none",
-                            padding: 0,
-                            margin: "0 0 8px 0",
-                            minHeight: "50px",
-                            color: "white",
-                            ...provided.draggableProps.style,
-                          }}
-                        >
-                          <CardView
-                            key={card.id}
-                            card={card}
-                            color={column.color}
-                            onRemove={(card: any) => handleRemove(card)}
-                            onUpdate={(card: any) => handleUpdate(card)}
-                          ></CardView>
-                        </div>
-                      );
-                    }}
-                  </Draggable>
-                ))}
+                cards
+                  .sort((a: any, b: any) => a.index - b.index)
+                  .map((card: any, index: any) => (
+                    <Draggable
+                      key={card.id}
+                      draggableId={card.id}
+                      index={index}
+                    >
+                      {(provided: any, snapshot: any) => {
+                        return (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={{
+                              userSelect: "none",
+                              padding: 0,
+                              margin: "0 0 8px 0",
+                              minHeight: "50px",
+                              color: "white",
+                              ...provided.draggableProps.style,
+                            }}
+                          >
+                            <CardView
+                              key={card.id}
+                              card={card}
+                              color={column.color}
+                              onRemove={(card: any) => handleRemove(card)}
+                              onUpdate={(card: any) => handleUpdate(card)}
+                            ></CardView>
+                          </div>
+                        );
+                      }}
+                    </Draggable>
+                  ))}
               {isCreating && (
                 <CardCreate
                   color={column.color}
