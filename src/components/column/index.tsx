@@ -5,6 +5,7 @@ import AddIcon from "@material-ui/icons/Add";
 import CardView from "../../components/card";
 import CardCreate from "../../components/card/create";
 import { Droppable, Draggable } from "react-beautiful-dnd";
+import { cardsRef } from "../../misc/firebase";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,10 +56,10 @@ const Column = ({ column, cards, onHandler }: IColumn) => {
   const handleUpdate = (card: any) => {
     onHandler("update", card);
   };
-
   useEffect(() => {
     setIsCreating(false);
   }, [cards]);
+
   return (
     <>
       <div className={classes.columnTitle}>
